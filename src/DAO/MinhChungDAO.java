@@ -40,29 +40,28 @@ public class MinhChungDAO {
 	}
 
 	public int update(MinhChungModel mc, int maTieuChi)  {
-		String sql = "update test.minhchung set tenminhchung = ?, noidung = ?, matieuchi = ? where maminhchung = ?;";
+		String sql = "update test.minhchung set tenminhchung = ?, noidung = ? where idminhchung = ?;";
 		try {
 			conn = DBConnection.getMySQLConnection();
 			ps = conn.prepareStatement(sql);
 			ps.setString(1, mc.getTenMinhChung());
-			ps.setString(2, mc.getNoiDung());
-			ps.setInt(3, maTieuChi);			
-			ps.setInt(4, mc.getMaMinhChung());
-
+			ps.setString(2, mc.getNoiDung());			
+			ps.setInt(3, mc.getMaMinhChung());
 			ps.executeUpdate();
 			return 1;
 		} catch (Exception e) {
+			System.out.print(e);
 			// TODO: handle exception
 		}
 		return 0;
 	}
 	
-	public int delete(int maSach) {
-		  String sql = "delete from qlchs.sach where MaSach = ?";
+	public int delete(int maMinhChung) {
+		  String sql = "delete from test.minhchung where idminhchung = ?";
 		try {
 			conn = DBConnection.getMySQLConnection();
 			ps = conn.prepareStatement(sql);
-			ps.setInt(1, maSach);
+			ps.setInt(1, maMinhChung);
 			ps.execute();
 			return 1;
 		} catch (Exception e) {
@@ -70,7 +69,6 @@ public class MinhChungDAO {
 		}
 		return 0;
 	}
-	
 	
 	public MinhChungModel get(int id) {
 		String sql = "Select * from test.minhchung where idminhchung =?";
@@ -95,7 +93,7 @@ public class MinhChungDAO {
 	public List<MergeMinhChungPropertyModel> getAll() {
 		List<MergeMinhChungPropertyModel> merge = new ArrayList<MergeMinhChungPropertyModel>();
 
-		String sql = "select idminhchung, tenminhchung, tieuchi.noidung, tentieuchi, tenphongban, ngaytao, ngaycungcap "
+		String sql = "select idminhchung, tenminhchung, minhchung.noidung, tentieuchi, tenphongban, ngaytao, ngaycungcap "
 				+ "from test.minhchung left join test.`chitietminhchung-tieuchi` on minhchung.idminhchung = `chitietminhchung-tieuchi`.`maminhchung-TC` "
 				+ "left join test.`chitietminhchung-phongban` on minhchung.idminhchung = `chitietminhchung-phongban`.`maminhchung`"
 				+ "left join test.tieuchi on tieuchi.idtieuchi = `chitietminhchung-tieuchi`.matieuchi "
@@ -132,7 +130,7 @@ public class MinhChungDAO {
 	
 	public List<MergeMinhChungPropertyModel> getByName(String name)  {
 		List<MergeMinhChungPropertyModel> merge = new ArrayList<MergeMinhChungPropertyModel>();
-		String sql = "select idminhchung, tenminhchung, tieuchi.noidung, tentieuchi, tenphongban, ngaytao, ngaycungcap "
+		String sql = "select idminhchung, tenminhchung, minhchung.noidung, tentieuchi, tenphongban, ngaytao, ngaycungcap "
 				+ "from test.minhchung left join test.`chitietminhchung-tieuchi` on minhchung.idminhchung = `chitietminhchung-tieuchi`.`maminhchung-TC` "
 				+ "left join test.`chitietminhchung-phongban` on minhchung.idminhchung = `chitietminhchung-phongban`.`maminhchung` "
 				+ "left join test.tieuchi on tieuchi.idtieuchi = `chitietminhchung-tieuchi`.matieuchi "
@@ -154,7 +152,7 @@ public class MinhChungDAO {
 
 	public List<MergeMinhChungPropertyModel> getByDepartment(String name) throws SQLException {
 		List<MergeMinhChungPropertyModel> merge = new ArrayList<MergeMinhChungPropertyModel>();
-		String sql = "select idminhchung, tenminhchung, tieuchi.noidung, tentieuchi, tenphongban, ngaytao, ngaycungcap "
+		String sql = "select idminhchung, tenminhchung, minhchung.noidung, tentieuchi, tenphongban, ngaytao, ngaycungcap "
 				+ "from test.minhchung left join test.`chitietminhchung-tieuchi` on minhchung.idminhchung = `chitietminhchung-tieuchi`.`maminhchung-TC` "
 				+ "left join test.`chitietminhchung-phongban` on minhchung.idminhchung = `chitietminhchung-phongban`.`maminhchung` "
 				+ "left join test.tieuchi on tieuchi.idtieuchi = `chitietminhchung-tieuchi`.matieuchi "
@@ -176,7 +174,7 @@ public class MinhChungDAO {
 
 	public List<MergeMinhChungPropertyModel> getByDateIssue(Date dateIssue) throws SQLException {
 		List<MergeMinhChungPropertyModel> merge = new ArrayList<MergeMinhChungPropertyModel>();
-		String sql = "select idminhchung, tenminhchung, tieuchi.noidung, tentieuchi, tenphongban, ngaytao, ngaycungcap "
+		String sql = "select idminhchung, tenminhchung, minhchung.noidung, tentieuchi, tenphongban, ngaytao, ngaycungcap "
 				+ "from test.minhchung left join test.`chitietminhchung-tieuchi` on minhchung.idminhchung = `chitietminhchung-tieuchi`.`maminhchung-TC` "
 				+ "left join test.`chitietminhchung-phongban` on minhchung.idminhchung = `chitietminhchung-phongban`.`maminhchung` "
 				+ "left join test.tieuchi on tieuchi.idtieuchi = `chitietminhchung-tieuchi`.matieuchi "
@@ -198,7 +196,7 @@ public class MinhChungDAO {
 	
 	public List<MergeMinhChungPropertyModel> sortByDateIssue() throws SQLException {
 		List<MergeMinhChungPropertyModel> merge = new ArrayList<MergeMinhChungPropertyModel>();
-		String sql = "select idminhchung, tenminhchung, tieuchi.noidung, tentieuchi, tenphongban, ngaytao, ngaycungcap "
+		String sql = "select idminhchung, tenminhchung, minhchung.noidung, tentieuchi, tenphongban, ngaytao, ngaycungcap "
 				+ "from test.minhchung left join test.`chitietminhchung-tieuchi` on minhchung.idminhchung = `chitietminhchung-tieuchi`.`maminhchung-TC` "
 				+ "left join test.`chitietminhchung-phongban` on minhchung.idminhchung = `chitietminhchung-phongban`.`maminhchung` "
 				+ "left join test.tieuchi on tieuchi.idtieuchi = `chitietminhchung-tieuchi`.matieuchi "

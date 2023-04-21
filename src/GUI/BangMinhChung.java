@@ -239,10 +239,10 @@ public class BangMinhChung extends JPanel{
 							tfDescription.setText(model.getValueAt(row, 2).toString());
 							tfNgayTao.setText(model.getValueAt(row, 5).toString());
 							tfNgayCap.setText(model.getValueAt(row, 5).toString());
-							TieuChiModel tcmodel = tchiDao.getByName(model.getValueAt(row, 3).toString());
-							cbbTieuChi.setSelectedItem(tcmodel.getTenTieuChi());
-							PhongBanModel pbmodel = pbDao.getByName(model.getValueAt(row, 4).toString());
-							cbbPhongBan.setSelectedItem(pbmodel.getTenPhongBan());
+							tchi = tchiDao.getByName(model.getValueAt(row, 3).toString());
+							cbbTieuChi.setSelectedItem(tchi.getTenTieuChi());
+							pb = pbDao.getByName(model.getValueAt(row, 4).toString());
+							cbbPhongBan.setSelectedItem(pb.getTenPhongBan());
 						}
 						
 //						String ten = sachdao.TLBySach(Integer.parseInt(tfID.getText()));
@@ -319,9 +319,16 @@ public class BangMinhChung extends JPanel{
 				btnEdit.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
+						for(TieuChiModel item : tchiDao.getAll()) {
+							if(item.getTenTieuChi().equals(cbbTieuChi.getSelectedItem())) {
+								tchi = item;
+								break;
+							}
+						}
 						update(new MinhChungModel(Integer.parseInt(tfID.getText()), 
 								tfName.getText(), 
-								""));
+								tfDescription.getText()), 
+								tchi.getMaTieuChi());
 					}
 				});
 
@@ -366,7 +373,7 @@ public class BangMinhChung extends JPanel{
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						TieuChiModel tc = (TieuChiModel) tchiDao.getbyname(cbbTieuChi.getSelectedItem().toString()).get(0);
-						new FormTieuChuan(tc.getTieuChuan().getMaTieuChuan());
+						new FormTieuChuan(tc.getTieuChuan().getTenTieuChuan());
 					}
 				});
 				
@@ -480,31 +487,59 @@ public class BangMinhChung extends JPanel{
 		
 	}
 	
-	public static void update(MinhChungModel updateMinhChung) {
-//		if (mcDao.update(updateMinhChung) == 1) {
-//			JOptionPane.showMessageDialog(table, "Sửa thành công",  "About", JOptionPane.INFORMATION_MESSAGE);
-//			tfID.setText("");
-//			tfName.setText("");
-//			tfDescription.setText("");
-//			tfIDPhongBan.setText("");
-//			load();
-//		} else {
-//			JOptionPane.showMessageDialog(table, "Sửa thất bại",  "About", JOptionPane.INFORMATION_MESSAGE);
-//		}
-		
+	public static void update(MinhChungModel mc, int maTieuChi) {
+		if(ctmc_tcDao.isHasMinhChung(maTieuChi, mc.getMaMinhChung()) == null) {
+			cttc = new ChiTietTieuChiModel(1, 
+					tchi, 
+					mc);
+			if(ctmc_tcDao.insert(cttc) == 1) {
+				if (mcDao.update(mc, maTieuChi) == 1) {
+					JOptionPane.showMessageDialog(table, "Sửa thành công",  "About", JOptionPane.INFORMATION_MESSAGE);
+					tfID.setText("");
+					tfName.setText("");
+					tfDescription.setText("");
+					tfIDTieuChuan.setText("");
+					tfNgayTao.setText("");
+					tfNgayCap.setText("");
+					load();
+				} else {
+					JOptionPane.showMessageDialog(table, "Sửa thất bại",  "About", JOptionPane.INFORMATION_MESSAGE);
+				}
+			} else {
+				JOptionPane.showMessageDialog(table, "Sửa thất bại",  "About", JOptionPane.INFORMATION_MESSAGE);
+			}
+		} else {
+			if (mcDao.update(mc, maTieuChi) == 1) {
+				JOptionPane.showMessageDialog(table, "Sửa thành công",  "About", JOptionPane.INFORMATION_MESSAGE);
+				tfID.setText("");
+				tfName.setText("");
+				tfDescription.setText("");
+				tfIDTieuChuan.setText("");
+				tfNgayTao.setText("");
+				tfNgayCap.setText("");
+				load();
+			} else {
+				JOptionPane.showMessageDialog(table, "Sửa thất bại",  "About", JOptionPane.INFORMATION_MESSAGE);
+			}
+		}
 	}
 	
 	public static void delete() {
-		if (tchiDao.delete(Integer.parseInt(tfID.getText())) == 1 && 
-			ctmc_tcDao.delete(tchi.getMaTieuChi(), Integer.parseInt(tfID.getText())) == 1 &&
+		if (ctmc_tcDao.delete(tchi.getMaTieuChi(), Integer.parseInt(tfID.getText())) == 1 &&
 			ctmc_pbDao.delete(Integer.parseInt(tfID.getText()), pb.getMaPhongBan()) == 1) {
-			JOptionPane.showMessageDialog(table, "Xóa thành công",  "About", JOptionPane.INFORMATION_MESSAGE);
-			tfID.setText("");
-			tfName.setText("");
-			tfDescription.setText("");
-			tfIDTieuChuan.setText("");
-
 			load();
+			if(mcDao.delete(Integer.parseInt(tfID.getText())) == 1) {
+				JOptionPane.showMessageDialog(table, "Xóa thành công",  "About", JOptionPane.INFORMATION_MESSAGE);
+				tfID.setText("");
+				tfName.setText("");
+				tfDescription.setText("");
+				tfIDTieuChuan.setText("");
+				tfNgayTao.setText("");
+				tfNgayCap.setText("");
+				load();
+			} else {
+				JOptionPane.showMessageDialog(table, "Xóa thành công",  "About", JOptionPane.INFORMATION_MESSAGE);
+			}
 		} else {
 			JOptionPane.showMessageDialog(table, "Xóa thất bại",  "About", JOptionPane.INFORMATION_MESSAGE);
 		}

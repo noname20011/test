@@ -22,12 +22,14 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 import models.TieuChuanModel;
-import DAO.TieuChuanDAO;;
+import DAO.TieuChuanDAO;
+import DAO.TieuChiDAO;
 
 @SuppressWarnings("serial")
 public class BangTieuChuan extends JPanel{
 	
 	static TieuChuanDAO hddao = new TieuChuanDAO();
+	static TieuChiDAO tchiDao = new TieuChiDAO();
 	
 	static JTextField tfID = new JTextField();
 	static JTextField tfName = new JTextField();
@@ -249,7 +251,7 @@ public class BangTieuChuan extends JPanel{
 				if (cbbFind.getSelectedIndex()== 0) {
 					findById(Integer.parseInt(textFind.getText()));
 				} else {
-					findByName(textFind.getText());
+//					findByName(textFind.getText());
 				}
 			}
 		});
@@ -288,14 +290,18 @@ public class BangTieuChuan extends JPanel{
 									tfName.getText(),
 									tfDescription.getText()
 									);
-		if (hddao.insert(hd) == 1) {
-			JOptionPane.showMessageDialog(table, "Thêm thành công",  "About", JOptionPane.INFORMATION_MESSAGE);
-			tfID.setText("");
-			tfName.setText("");
-			tfDescription.setText("");
-			load();
+		if(hddao.getAll().size() < 20) {
+			if (hddao.insert(hd) == 1) {
+				JOptionPane.showMessageDialog(table, "Thêm thành công",  "About", JOptionPane.INFORMATION_MESSAGE);
+				tfID.setText("");
+				tfName.setText("");
+				tfDescription.setText("");
+				load();
+			} else {
+				JOptionPane.showMessageDialog(table, "Thêm thất bại",  "About", JOptionPane.INFORMATION_MESSAGE);
+			}
 		} else {
-			JOptionPane.showMessageDialog(table, "Thêm thất bại",  "About", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(table, "Thêm thất bại. Chỉ được tối đa 20 tiêu chuẩn",  "About", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 	
@@ -314,14 +320,22 @@ public class BangTieuChuan extends JPanel{
 	}
 	
 	public static void delete() {
-		if (hddao.delete(Integer.parseInt(tfID.getText())) == 1 ) {
-			JOptionPane.showMessageDialog(table, "Xóa thành công",  "About", JOptionPane.INFORMATION_MESSAGE);
-			tfID.setText("");
-			tfName.setText("");
-			tfDescription.setText("");
-			load();
+		if(hddao.getAll().size() > 3) {
+			if(tchiDao.deleteByIdTieuChuan(Integer.parseInt(tfID.getText())) == 1) { 
+				if (hddao.delete(Integer.parseInt(tfID.getText())) == 1 ) {
+					JOptionPane.showMessageDialog(table, "Xóa thành công",  "About", JOptionPane.INFORMATION_MESSAGE);
+					tfID.setText("");
+					tfName.setText("");
+					tfDescription.setText("");
+					load();
+				} else {
+					JOptionPane.showMessageDialog(table, "Xóa thất bại",  "About", JOptionPane.INFORMATION_MESSAGE);
+				}
+			} else {
+				JOptionPane.showMessageDialog(table, "Xóa thất bại",  "About", JOptionPane.INFORMATION_MESSAGE);
+			}
 		} else {
-			JOptionPane.showMessageDialog(table, "Xóa thất bại",  "About", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(table, "Xóa thất bại. Tối thiểu 3 tiêu chuẩn.",  "About", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 	
@@ -340,20 +354,20 @@ public class BangTieuChuan extends JPanel{
 		model.addRow(row);
 	}
 
-	public static void findByName(String name) {
-		int rowCount = model.getRowCount();
-		for (int i = rowCount - 1; i >= 0; i--) {
-			model.removeRow(i);
-		}
-
-		List<TieuChuanModel> list = hddao.getbyname(name);
-		for (int i = 0; i < list.size(); i++) {
-			TieuChuanModel hd = (TieuChuanModel) list.get(i);
-			Vector<String> row = new Vector<String>();
-			row.add(Integer.toString(hd.getMaTieuChuan()));
-			row.add(String.valueOf((hd.getTenTieuChuan())));
-			row.add(String.valueOf(hd.getNoiDung()));
-			model.addRow(row);
-		}
-	}
+//	public static void findByName(String name) {
+//		int rowCount = model.getRowCount();
+//		for (int i = rowCount - 1; i >= 0; i--) {
+//			model.removeRow(i);
+//		}
+//
+//		List<TieuChuanModel> list = hddao.getByName(name);
+//		for (int i = 0; i < list.size(); i++) {
+//			TieuChuanModel hd = (TieuChuanModel) list.get(i);
+//			Vector<String> row = new Vector<String>();
+//			row.add(Integer.toString(hd.getMaTieuChuan()));
+//			row.add(String.valueOf((hd.getTenTieuChuan())));
+//			row.add(String.valueOf(hd.getNoiDung()));
+//			model.addRow(row);
+//		}
+//	}
 }

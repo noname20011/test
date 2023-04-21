@@ -18,7 +18,7 @@ import models.TieuChuanModel;
 
 @SuppressWarnings("serial")
 public class FormTieuChuan extends JFrame{
-	static int tcId;
+	static String tenTieuChuan;
 	
 	static TieuChuanDAO tcdao = new TieuChuanDAO();
 	JPanel pnMenu = new JPanel();
@@ -34,8 +34,8 @@ public class FormTieuChuan extends JFrame{
 	
 	static JScrollPane sp = new JScrollPane(table);
 	
-	public FormTieuChuan(int id) {
-		tcId = id;
+	public FormTieuChuan(String tenTieuChuan) {
+		FormTieuChuan.tenTieuChuan = tenTieuChuan;
 		setTitle("Form Tiêu Chuẩn");
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setSize(755, 400);
@@ -88,7 +88,7 @@ public class FormTieuChuan extends JFrame{
 	}
 	
 	public static void load() {
-		TieuChuanModel tg = tcdao.get(tcId);
+		TieuChuanModel tg = tcdao.getByName(tenTieuChuan);
 		tfID.setText(Integer.toString(tg.getMaTieuChuan())); 
 		tfName.setText(tg.getTenTieuChuan());	
 		tfDesc.setText(tg.getNoiDung()); 	

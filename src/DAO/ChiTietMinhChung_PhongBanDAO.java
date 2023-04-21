@@ -6,6 +6,10 @@ import java.sql.ResultSet;
 
 import app.DBConnection;
 import models.ChiTietMinhChung_PhongBanModel;
+import models.ChiTietTieuChiModel;
+import models.MinhChungModel;
+import models.PhongBanModel;
+import models.TieuChiModel;
 
 
 
@@ -14,6 +18,8 @@ public class ChiTietMinhChung_PhongBanDAO {
     PreparedStatement ps = null;
     ResultSet rs = null;
     ChiTietMinhChung_PhongBanModel tcmc_pb = new ChiTietMinhChung_PhongBanModel();
+    MinhChungDAO mcDao = new MinhChungDAO();
+    PhongBanDAO pbDao = new PhongBanDAO();
 	
 
 	public int insert(ChiTietMinhChung_PhongBanModel tcmc_pb)  {
@@ -68,20 +74,31 @@ public class ChiTietMinhChung_PhongBanDAO {
 		return 0;
 	}
 	
-	public int isHasMinhChung(int maMinhChung, int maPhongBan) {
+	public ChiTietMinhChung_PhongBanModel isHasMinhChung(int maMinhChung, int maPhongBan) {
+		ChiTietMinhChung_PhongBanModel ctmc_pb = null;
 		String sql = "select * from test.`chitietminhchung-phongban` where maminhchung = ? and maphongban = ? limit 1";
 		try {
 			conn = DBConnection.getMySQLConnection();
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, maMinhChung);
 			ps.setInt(2, maPhongBan);
-			ps.execute();
-			return 1;
+			rs = ps.executeQuery();
+			ChiTietMinhChung_PhongBanModel response = new ChiTietMinhChung_PhongBanModel();
+			while (rs.next()) {
+				MinhChungModel mc = mcDao.get(rs.getInt(2));
+				PhongBanModel pb = pbDao.get(rs.getInt(3));
+				response.setMaChiTietMinhChung_PhongBan(rs.getInt(1));
+				response.setMaMinhChung(mc);
+				response.setMaPhongBan(pb);
+				response.setNgayCungCap(rs.getDate(4));
+				response.setNgayTao(rs.getDate(5));
+				return ctmc_pb = response;
+			}
 		} catch (Exception e) {
-			System.out.print(e);
+			return ctmc_pb = null;
 			// TODO: handle exception
 		}
-		return 0;
+		return ctmc_pb;
 	}
 	
 }

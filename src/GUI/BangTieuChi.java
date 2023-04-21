@@ -132,7 +132,7 @@ public class BangTieuChi extends JPanel{
 				pnButton.add(btnAdd);
 				pnButton.add(btnEdit);
 				pnButton.add(btnDelete);
-//				pnButton.add(btnSave);
+				pnButton.add(btnSave);
 
 				pnTextField.add(pnButton);
 				
@@ -274,7 +274,7 @@ public class BangTieuChi extends JPanel{
 				btnSave.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
-
+						load();
 					}
 				});
 
@@ -295,7 +295,7 @@ public class BangTieuChi extends JPanel{
 				btnTC.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						new FormTieuChuan(Integer.parseInt(tfID.getText()));
+						new FormTieuChuan(cbbTieuChuan.getSelectedItem().toString());
 					}
 				});
 				
@@ -365,7 +365,7 @@ public class BangTieuChi extends JPanel{
 		}
 		
 		tieuchuan = new TieuChuanModel(Integer.parseInt(tfIDTieuChuan.getText()), "", "") ;
-		TieuChiModel sach = new TieuChiModel(1, 
+		TieuChiModel sach = new TieuChiModel(Integer.parseInt(tfID.getText()), 
 				tfName.getText(), 
 				tfDescription.getText(), 
 				tieuchuan);
@@ -389,13 +389,10 @@ public class BangTieuChi extends JPanel{
 			tfName.setText("");
 			tfDescription.setText("");
 			tfIDTieuChuan.setText("");
-
 			load();
 		} else {
 			JOptionPane.showMessageDialog(table, "Xóa thất bại",  "About", JOptionPane.INFORMATION_MESSAGE);
 		}
-		
-		
 	}
 	
 	public static void findById (int id) {

@@ -52,12 +52,12 @@ public class TieuChiDAO {
 	        return 0;
 	}
 	
-	public int delete(int MaTL) {
+	public int delete(int idMinhChung) {
 		  String sql = "delete from test.tieuchi where idtieuchi = ?";
 		try {
 			conn = DBConnection.getMySQLConnection();
 			ps = conn.prepareStatement(sql);
-			ps.setInt(1, MaTL);
+			ps.setInt(1, idMinhChung);
 			ps.execute();
 			return 1;
 		} catch (Exception e) {
@@ -66,6 +66,19 @@ public class TieuChiDAO {
 		return 0;
 	}
 	
+	public int deleteByIdTieuChuan(int idMinhChung) {
+		  String sql = "delete from test.tieuchi where matieuchuan = ?";
+		try {
+			conn = DBConnection.getMySQLConnection();
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, idMinhChung);
+			ps.execute();
+			return 1;
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return 0;
+	}
 	
 	public List<TieuChiModel> getAll() {
 		List<TieuChiModel> tl = new ArrayList<TieuChiModel>();

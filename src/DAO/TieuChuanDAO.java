@@ -104,9 +104,9 @@ public class TieuChuanDAO {
 	}
 	
 	
-	public List<TieuChuanModel> getbyname(String name) {
-		List<TieuChuanModel> hd = new ArrayList<TieuChuanModel>();
-		String sql = "SELECT hoadon.* FROM qlchs.hoadon inner join qlchs.nhanvien on qlchs.hoadon.MaNV = qlchs.nhanvien.MaNV where (qlchs.nhanvien.TenNV like '%' ? '%' );";
+	public TieuChuanModel getByName(String name) {
+			TieuChuanModel hd = null;;
+		String sql = "SELECT * FROM test.tieuchuan where tentieuchuan = ? limit 1";
 //		String sql = "SELECT hoadon.* FROM qlchs.hoadon inner join qlchs.nhanvien on qlchs.hoadon.MaNV = qlchs.nhanvien.MaNV where qlchs.nhanvien.TenNV = ?;";
 		try {
 			conn = DBConnection.getMySQLConnection();
@@ -114,8 +114,9 @@ public class TieuChuanDAO {
 			ps.setString(1, name);
 			rs = ps.executeQuery();
 			while(rs.next()) {
-				hd.add(new TieuChuanModel(rs.getInt(1), rs.getString(2), rs.getString(3)));
+				hd = new TieuChuanModel(rs.getInt(1), rs.getString(2), rs.getString(3));
 			}
+			return hd;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
